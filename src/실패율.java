@@ -5,12 +5,7 @@ import java.util.Comparator;
 public class 실패율 {
 
 	public static void main(String[] args) {
-//		5, []4, [4, 4, 4, 4, 4]
-		int[] arr = new int[] {4, 4, 4, 4, 4};
-		
-//		System.out.println(.toString());
-		
-		int[] answer = solution(4, arr);
+
 	}
 	
 	/*
@@ -19,40 +14,41 @@ public class 실패율 {
 		전체 스테이지의 개수 N, 게임을 이용하는 사용자가 현재 멈춰있는 스테이지의 번호가 담긴 배열 stages가 매개변수로 주어질 때, 
 		실패율이 높은 스테이지부터 내림차순으로 스테이지의 번호가 담겨있는 배열을 return 하도록 solution 함수를 완성하라.
 	 */
-    public static int[] solution(int N, int[] stages) {
+    public int[] solution(int N, int[] stages) {
+//    	1번부터 사용하기 위해서
     	float[] clear = new float[N + 1];
     	float[] notClear = new float[N + 1];
-    	float[] answer = new float[N + 1];
     	
-//    	4/ 6
-//    	 1 2 3 4 5
     	Pair[] pairArr = new Pair[N];
     	
     	for (int i = 0; i < stages.length; i++) {
 			for (int j = 1; j < stages[i]; j++) {
+				
 				clear[j]++;
 			}
 			
-			if(stages[i] <= notClear.length) {				
-				notClear[stages[i]]++;
-			}
+			if(stages[i] < N+1)
+			notClear[stages[i]]++;
 		}
     	
-//    	1~6
-//    	1,2,3,4,5
-    	for (int i = 1; i < answer.length; i++) {
-    		pairArr[i-1] = new Pair(notClear[i]/(N-clear[i]),i);
+    	for (int i = 0; i < pairArr.length; i++) {
+    		if( (notClear[i+1]+clear[i+1]) == 0) {
+    			pairArr[i] = new Pair(0f,i+1);
+    			continue;
+    		}
+    		pairArr[i] = new Pair(notClear[i+1]/(notClear[i+1]+clear[i+1]),i+1);
 		}
     	
-    	Arrays.sort(pairArr,new Comparator<Pair>() {
+    	
+    	Arrays.sort(pairArr, new Comparator<Pair>() {
 			@Override
 			public int compare(Pair o1, Pair o2) {
-				if( o1.score < o2.score) {
+				if( o1.score < o2.score ) {
 					return 1;
 				}else if( o1.score == o2.score ) {
-					if( o1.idx > o2.idx) {
+					if( o1.idx > o2.idx ) {
 						return 1;
-					}else if( o1.idx == o2.idx) {
+					}else if( o1.idx == o2.idx ) {
 						return 0;
 					}else {
 						return -1;
@@ -63,16 +59,17 @@ public class 실패율 {
 			}
 		});
     	
-    	int[] idx = new int[N];
-    	for (int i = 0; i < idx.length; i++) {
-			idx[i] = pairArr[i].idx;
+    	int[] answer = new int[N];
+    	
+    	for (int i = 0; i < answer.length; i++) {
+    		answer[i] = pairArr[i].idx;
 		}
-
- 
-        return idx;
+    	
+    	
+    	return answer;
     }
     
-    public static class Pair{
+    public class Pair{
     	float score;
     	int idx;
     	
